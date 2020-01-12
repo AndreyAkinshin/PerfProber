@@ -16,9 +16,9 @@ namespace PerfProber
         static void Main(string[] args)
         {
             var runner = new Runner();
-            // runner.Sync();
+            runner.Sync();
             // Measure(runner.CpuLoad, 1000000);
-            Measure("Memory", runner.MemoryLoad, 5000);
+            Measure("Disk", runner.DiskLoad, 5000);
         }
 
         public static void Measure(string name, Action<int> action, int iterations)
@@ -45,17 +45,17 @@ namespace PerfProber
         }
 
         private SHA256 sha256 = SHA256.Create();
-        private byte[] cpuData, memoryData;
+        private byte[] cpuData, diskLoad;
         public const int N = 100000;
 
         public Runner()
         {
             cpuData = new byte[N];
             new Random(42).NextBytes(cpuData);
-            memoryData = new byte[64 * 1024 * 1024];
+            diskLoad = new byte[64 * 1024 * 1024];
         }
         
-        private readonly DateTime waitForDate = new DateTime(2020, 1, 12, 20, 40, 0);
+        private readonly DateTime waitForDate = new DateTime(2020, 1, 12, 21, 4, 0);
 
         public void Sync()
         {
@@ -88,12 +88,12 @@ namespace PerfProber
             holder = res;
         }
 
-        public void MemoryLoad(int m)
+        public void DiskLoad(int m)
         {
             for (int i = 0; i < m; i++)
             {
                 var fileName = Path.GetTempFileName();
-                File.WriteAllBytes(fileName, memoryData);
+                File.WriteAllBytes(fileName, diskLoad);
                 File.Delete(fileName);
             }
         }
