@@ -16,9 +16,9 @@ namespace PerfProber
         static void Main(string[] args)
         {
             var runner = new Runner();
-            runner.Sync();
+            //runner.Sync();
             // Measure(runner.CpuLoad, 1000000);
-            Measure("Disk", runner.DiskLoad, 5000);
+            Measure("Disk", runner.DiskLoad, 2500);
         }
 
         public static void Measure(string name, Action<int> action, int iterations)
@@ -59,17 +59,21 @@ namespace PerfProber
 
         public void Sync()
         {
-            while (true)
+            using (WebClient client = new WebClient())
             {
-                var now = GetNistTime();
-                if (now < waitForDate)
+                while (true)
                 {
-                    Console.WriteLine($"Wait for sync (now = {now:u})");
-                    Thread.Sleep(1000);
-                }
-                else
-                {
-                    break;
+                    var gate = client.DownloadString(
+                        "https://raw.githubusercontent.com/AndreyAkinshin/PerfProber/master/gate.txt");
+                    if (gate != "1")
+                    {
+                        Console.WriteLine($"Wait for sync (gate = {gate})");
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
             Console.WriteLine("Synced");
