@@ -12,7 +12,7 @@ namespace PerfProber
             runner.CpuLoad(1); // Warmup
 
             var sw = Stopwatch.StartNew();
-            runner.CpuLoad(100000);
+            runner.CpuLoad(1000000);
             sw.Stop();
             Console.WriteLine("Elapsed: {0:0.000}", sw.Elapsed.TotalSeconds);
         }
